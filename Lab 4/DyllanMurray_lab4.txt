@@ -1,0 +1,267 @@
+--------------2.1: Simple Selection -------------
+1. SELECT *
+  FROM country
+  WHERE name like '%Ocean%'
+2. SELECT *
+  FROM country
+  WHERE area = 0
+3.SELECT DISTINCT region
+  FROM country
+ 4. SELECT name, population
+  FROM country
+  WHERE population > 10000000
+5. SELECT name, population, region
+  FROM country
+  WHERE population > 10000000
+  AND  region IN ('Asia' , 'Europe'); 
+  -------------2.2: Summarization and Aggregation--------
+ 1. 21 countries 
+ SELECT name, area
+  FROM country
+  WHERE area > 500000 and area < 1000000;
+2. SELECT count(name), sum(area), avg (area), region 
+  FROM country
+  GROUP BY region;
+3. SELECT count(name), sum(population), region
+  FROM country
+  WHERE population > 10000000
+  GROUP By region
+  HAVING count(name) > 5
+4. SELECT name, population, gdp, (population/area) as pop_density
+  FROM country
+  WHERE area != 0
+  ORDER BY gdp DESC;
+5.SELECT avg(population) as pop_avg, avg(gdp)as gdp_avg, avg(population/area) as pop_density, region
+  FROM country
+  WHERE area != 0
+  GROUP By region
+  HAVING avg(population) > 10000000
+  order by avg(gdp)desc
+  -------------2.3: Nested Queries------------------ 
+1.SELECT name
+FROM country
+Where gdp > (
+	select sum(gdp)
+	from country
+	where region = 'Africa');
+2. SELECT region
+  FROM country
+  GROUP BY region
+  HAVING sum(gdp) >= ALL (
+	select sum(gdp)
+	from country 
+	group by region);	
+3.SELECT name
+  FROM country
+  WHERE region = 'Asia'
+  AND population > (
+	select max(population)
+	from country
+	Where region = 'North America');
+  -------------2.4:Insert, Update and Delete ------------------
+  1. DELETE FROM country
+ WHERE area != 0 and gdp= 0 and population = 0;
+ 2. UPDATE country
+   SET region='Africa'
+ WHERE name = 'Mauritius';
+3.  UPDATE country
+   SET gdp = POWER(gdp, .05)
+ WHERE name = 'United States';
+4.
+UPDATE country
+SET population = 
+    (
+   Select population
+   from country
+   where name = 'Hong Kong'
+   ),
+ area = 
+   (
+	select area
+	from country
+	where name = 'Hong Kong'
+	)
+	
+ gdp = 
+   (
+	Select gdp
+	from country
+	where name = 'Hong Kong'
+	)
+ WHERE Name = 'China';
+DELETE FROM country
+ WHERE name = 'Hong Kong;
+
+
+
+5.INSERT INTO country(
+            name, region)
+    VALUES ('Korea', 'Asia');
+
+	UPDATE country
+    SET population = 
+    (
+   Select sum(population)
+   from country
+   where name = 'Korea, North' 
+   and name = 'Korea South'),
+   
+area = (
+	select sum(area)
+	from country
+	where name = 'Korea, North' 
+	and name = 'Korea South'),
+
+ gdp = (
+   
+	Select sum(gdp)
+	from country
+	where name = 'Korea, North' 
+	and name = 'Korea South'
+	)
+ WHERE Name = 'Korea'
+ 
+ Delete from country
+ where name = 'Korea, North' 
+   and name = 'Korea South'
+	
+	---------------finish---------
+-------------2.5 Overall practice------------------
+1. CREATE TABLE Planet
+  (name char(50),
+   NumMoons float(3),
+   Type char(10),
+   LengthOfYear float(10),
+   primary key (name)
+   );
+   INSERT INTO Planet Values ('Mercury', 0, 'Rocky', 0.24);
+INSERT INTO Planet Values ('Venus', 0, 'Rocky', 0.62 );
+INSERT INTO Planet Values ('Earth', 1, 'Rocky', 1) ;
+INSERT INTO Planet Values ('Mars', 2, 'Rocky', 1.88);
+INSERT INTO Planet Values ('Jupiter', 16, 'Gas', 11.68);
+INSERT INTO Planet Values ('Saturn', 18, 'Gas', 29.46);
+INSERT INTO Planet Values ('Pluto', 1, 'Rocky', 247.7);
+
+CREATE TABLE Sensor
+	( name char(30),
+	year char(15),
+	dest char(15)
+	);
+INSERT INTO Sensor Values ('Pioneer 5', 1960, 'sun');
+INSERT INTO Sensor Values ('Mariner 10', 1974, 'Mercury');
+INSERT INTO Sensor Values ('Messenger', 2008, 'Mercury');
+INSERT INTO Sensor Values ('Zond', 1964, 'Venus');
+INSERT INTO Sensor Values ('Viking', 1976, 'Mars');
+INSERT INTO Sensor Values ('Cassini', 2000, 'Jupiter');
+INSERT INTO Sensor Values ('Galileo', 1995, 'Jupiter');	
+
+
+1. Select *
+ From Planet 
+ "Mercury                                           ";0;"Rocky     ";0.24
+"Venus                                             ";0;"Rocky     ";0.62
+"Earth                                             ";1;"Rocky     ";1
+"Mars                                              ";2;"Rocky     ";1.88
+"Jupiter                                           ";16;"Gas       ";11.68
+"Saturn                                            ";18;"Gas       ";29.46
+"Pluto                                             ";1;"Rocky     ";247.7
+
+ lab4_2=# \d+ Planet
+                              Table "public.planet"
+    Column    |     Type      | Modifiers | Storage  | Stats target | Description
+--------------+---------------+-----------+----------+--------------+-------------
+ name         | character(50) | not null  | extended |              |
+ nummoons     | real          |           | plain    |              |
+ type         | character(10) |           | extended |              |
+ lengthofyear | real          |           | plain    |              |
+Indexes:
+    "planet_pkey" PRIMARY KEY, btree (name)
+Has OIDs: no
+
+------------------------------------------------- 
+ Select *
+ From Sensor
+ "Pioneer 5                     ";"1960           ";"sun     "
+"Mariner 10                    ";"1974           ";"Mercury "
+"Messenger                     ";"2008           ";"Mercury "
+"Zond                          ";"1964           ";"Venus   "
+"Viking                        ";"1976           ";"Mars    "
+"Cassini                       ";"2000           ";"Jupiter "
+"Galileo                       ";"1995           ";"Jupiter "
+
+ 
+ lab4_2=# \d+ Sensor
+                           Table "public.sensor"
+ Column |     Type      | Modifiers | Storage  | Stats target | Description
+--------+---------------+-----------+----------+--------------+-------------
+ name   | character(30) | not null  | extended |              |
+ dest   | character(15) |           | extended |              |
+ year   | character(8)  |           | extended |              |
+Indexes:
+    "sensor_pkey" PRIMARY KEY, btree (name)
+Has OIDs: no
+
+
+4. 
+Select count(name)
+ from Planet
+ 
+5.  
+Select sum(numMoons)
+ from Planet
+ 
+6.   
+Select count(name)
+ from Sensor
+ where dest = 'Mars';
+ 
+7. 
+Select Sensor.name
+From Sensor
+IN (
+SELECT Planet.name
+FROM Planet
+WHERE Planet.numMoons >0
+
+
+8. 
+SELECT Sensor.name
+FROM Sensor
+WHERE Sensor.dest
+IN (
+SELECT Planet.name
+FROM Planet
+WHERE Planet.Type =  'Rocky'
+)
+
+9. 
+SELECT Sensor.name
+FROM Sensor
+WHERE Sensor.dest = (
+
+SELECT Planet.Name
+FROM Planet
+ORDER BY Planet.LengthOfYear ASC 
+LIMIT 0 , 1
+);
+
+10.
+select name 
+ from Planet
+ order by lengthofyear desc limit 1
+ 
+11. 
+select name 
+ from Planet 
+ where type = 'Gas';
+
+12.
+select name 
+from Planet 
+where nummoons > 0;
+
+13.  
+SELECT Planet.name, Sensor.name
+FROM Planet
+LEFT JOIN Sensor ON Planet.name = Sensor.dest
+	
