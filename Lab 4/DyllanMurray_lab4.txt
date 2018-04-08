@@ -1,4 +1,4 @@
---------------2.1: Simple Selection -------------
+--------------2.1: dSimple Selection -------------
 1. SELECT *
   FROM country
   WHERE name like '%Ocean%'
